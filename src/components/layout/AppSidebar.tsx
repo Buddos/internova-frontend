@@ -40,11 +40,11 @@ export default function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
               className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                 isActive
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                  : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-white"
               }`}
             >
               <item.icon size={18} />
-              <span className="hidden sm:inline">{item.label}</span>
+              <span className="font-semibold text-white">{item.label}</span>
             </NavLink>
           );
         })}
@@ -55,14 +55,14 @@ export default function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
         <NavLink
           to="/settings"
           onClick={onClose}
-          className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/50"
+          className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-white hover:bg-sidebar-accent/50"
         >
           <Settings size={18} />
-          <span className="hidden sm:inline">Settings</span>
+          <span className="font-semibold">Settings</span>
         </NavLink>
         <button className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-destructive hover:bg-sidebar-accent/50">
           <LogOut size={18} />
-          <span className="hidden sm:inline">Logout</span>
+          <span className="font-semibold">Logout</span>
         </button>
       </div>
     </aside>
