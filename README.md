@@ -1,73 +1,180 @@
-# Welcome to your Lovable project
+# Internova Frontend
 
-## Project info
+A modern web application for managing internship opportunities, applications, and logbooks. Built with React, TypeScript, and Tailwind CSS.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Project Description
 
-## How can I edit this code?
+Internova Frontend is a comprehensive platform that connects students, companies, and supervisors for internship management. The application provides:
 
-There are several ways of editing your application.
+- **Student Features**: Browse opportunities, submit applications, track application status, maintain logbooks
+- **Company Features**: Post opportunities, review applications, manage candidates
+- **Supervisor Features**: Monitor student progress, verify internship completion, access verification portals
+- **Dashboard**: Centralized view of applications and opportunities
+- **Profile Management**: User profiles with customizable settings
+- **Calendar Integration**: Logbook calendar for tracking internship activities
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
+## Technologies
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Vite** - Next generation frontend tooling
+- **React 18** - JavaScript library for building user interfaces
+- **TypeScript** - Typed superset of JavaScript
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - High-quality React components
+- **React Router** - Client-side routing
+- **React Query** - Data fetching and caching
+- **React Hook Form** - Performant forms
+- **Zod** - TypeScript-first schema validation
 
-## How can I deploy this project?
+## Project Structure
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+```
+src/
+├── components/          # Reusable React components
+│   ├── layout/         # App layout components (Header, Sidebar)
+│   ├── ui/             # shadcn/ui components
+│   ├── NavLink.tsx     # Navigation link component
+│   └── ProtectedRoute.tsx
+├── pages/              # Page components
+│   ├── ApplicantPipeline.tsx   # Track applications
+│   ├── Discovery.tsx           # Browse opportunities
+│   ├── LogbookCalendar.tsx    # Internship logbook
+│   ├── SupervisorDashboard.tsx # Supervisor view
+│   ├── VerificationPortal.tsx  # Verification management
+│   ├── Login.tsx
+│   ├── Register.tsx
+│   ├── Profile.tsx
+│   └── Setting.tsx
+├── contexts/           # React Context API
+│   └── AuthContext.tsx # Authentication state
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions
+└── App.tsx             # Root component with routing
+```
 
-## Can I connect a custom domain to my Lovable project?
+## Key Features
 
-Yes, you can!
+### Authentication Context
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```typescript
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "student" | "company" | "supervisor";
+  avatar?: string;
+}
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  applications: Application[];
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string, role: string) => Promise<void>;
+  logout: () => void;
+  applyForOpportunity: (opportunityId: string, opportunityTitle: string, company: string) => Promise<void>;
+}
+```
+
+### Application Routing
+
+```typescript
+<BrowserRouter>
+  <Routes>
+    {/* Public Routes */}
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    
+    {/* Protected App Routes */}
+    <Route element={<AppLayout />}>
+      <Route path="/" element={<ApplicantPipeline />} />
+      <Route path="/discovery" element={<Discovery />} />
+      <Route path="/logbook" element={<LogbookCalendar />} />
+      <Route path="/supervisor" element={<SupervisorDashboard />} />
+      <Route path="/verification" element={<VerificationPortal />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/settings" element={<Settings />} />
+    </Route>
+  </Routes>
+</BrowserRouter>
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 16+ or bun
+- npm or bun package manager
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+
+# Navigate to project directory
+cd internova-frontend
+
+# Install dependencies
+npm install
+# or
+bun install
+```
+
+### Development
+
+```bash
+# Start development server
+npm run dev
+
+# Run tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+### Build
+
+```bash
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+
+# Build for development
+npm run build:dev
+```
+
+### Linting
+
+```bash
+# Run ESLint
+npm run lint
+```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run build:dev` | Build for development |
+| `npm run preview` | Preview production build |
+| `npm run test` | Run tests once |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run lint` | Run ESLint |
+
+## Contributing
+
+1. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Commit your changes (`git commit -m 'Add amazing feature'`)
+3. Push to the branch (`git push origin feature/amazing-feature`)
+4. Open a Pull Request
+
+## License
+
+This project is private and proprietary.
