@@ -29,15 +29,15 @@ export default function Settings() {
       <>
         <AppHeader title="Settings" />
         <main className="flex-1 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen">
-            <Card className="max-w-md p-6 text-center">
-              <h2 className="font-heading text-2xl font-bold text-foreground">Sign In Required</h2>
-              <p className="mt-2 text-muted-foreground">You need to be logged in to access settings.</p>
-              <div className="mt-6 flex gap-2">
-                <Button variant="outline" onClick={() => navigate("/login")} className="flex-1">
+          <div className="flex items-center justify-center min-h-screen px-4 py-8">
+            <Card className="w-full max-w-md p-6 text-center">
+              <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Sign In Required</h2>
+              <p className="mt-2 text-xs sm:text-sm text-muted-foreground">You need to be logged in to access settings.</p>
+              <div className="mt-6 flex flex-col sm:flex-row gap-2">
+                <Button variant="outline" onClick={() => navigate("/login")} className="flex-1 text-xs sm:text-sm">
                   Sign In
                 </Button>
-                <Button onClick={() => navigate("/register")} className="flex-1">
+                <Button onClick={() => navigate("/register")} className="flex-1 text-xs sm:text-sm">
                   Register
                 </Button>
               </div>
@@ -52,30 +52,30 @@ export default function Settings() {
     <>
       <AppHeader title="Settings" />
       <main className="flex-1 overflow-y-auto">
-        <div className="border-b border-border bg-card px-6 py-6">
-          <h2 className="font-heading text-2xl font-bold text-foreground">Account Settings</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Manage your preferences and account security</p>
+        <div className="border-b border-border bg-card px-4 sm:px-6 py-4 sm:py-6">
+          <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Account Settings</h2>
+          <p className="mt-1 text-xs sm:text-sm text-muted-foreground">Manage your preferences and account security</p>
         </div>
 
-        <div className="max-w-4xl p-6">
+        <div className="max-w-4xl p-4 sm:p-6">
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="general">General</TabsTrigger>
-              <TabsTrigger value="notifications">Notifications</TabsTrigger>
-              <TabsTrigger value="privacy">Privacy</TabsTrigger>
-              <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
+              <TabsTrigger value="general" className="text-xs sm:text-sm">General</TabsTrigger>
+              <TabsTrigger value="notifications" className="text-xs sm:text-sm">Notifications</TabsTrigger>
+              <TabsTrigger value="privacy" className="text-xs sm:text-sm">Privacy</TabsTrigger>
+              <TabsTrigger value="account" className="text-xs sm:text-sm">Account</TabsTrigger>
             </TabsList>
 
             {/* General Tab */}
-            <TabsContent value="general" className="space-y-6">
-              <Card className="p-6">
-                <h3 className="flex items-center gap-2 font-heading text-lg font-semibold">
-                  <Palette size={20} />
+            <TabsContent value="general" className="space-y-6 mt-6">
+              <Card className="p-4 sm:p-6">
+                <h3 className="flex items-center gap-2 font-heading text-base sm:text-lg font-semibold">
+                  <Palette size={18} />
                   Display Settings
                 </h3>
                 <div className="mt-4 space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="dark-mode" className="text-base font-medium">Dark Mode</Label>
+                    <Label htmlFor="dark-mode" className="text-xs sm:text-sm font-medium">Dark Mode</Label>
                     <Switch
                       id="dark-mode"
                       checked={darkMode}
@@ -83,9 +83,9 @@ export default function Settings() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="theme">Theme</Label>
+                    <Label htmlFor="theme" className="text-xs sm:text-sm">Theme</Label>
                     <Select value={theme} onValueChange={setTheme}>
-                      <SelectTrigger id="theme">
+                      <SelectTrigger id="theme" className="text-xs sm:text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

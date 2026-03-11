@@ -39,35 +39,35 @@ export default function SupervisorDashboard() {
   return (
     <>
       <AppHeader title="Student Supervision" />
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
         {/* Top Actions */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h2 className="font-heading text-xl font-semibold text-foreground">Active Supervision Portfolio</h2>
-            <p className="text-sm text-muted-foreground">Monitor compliance, track logbook progress, and manage student readiness.</p>
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="font-heading text-lg sm:text-xl font-semibold text-foreground">Active Supervision Portfolio</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">Monitor compliance, track logbook progress, and manage student readiness.</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Button variant="outline" className="text-xs sm:text-sm gap-2 w-full sm:w-auto">
               <FileText size={14} />
               Export Report
             </Button>
-            <Button>
+            <Button className="text-xs sm:text-sm gap-2 w-full sm:w-auto">
               <Users size={14} />
-              Assign New Student
+              Assign New
             </Button>
           </div>
         </div>
 
         {/* KPI Cards */}
-        <div className="mt-6 grid grid-cols-4 gap-4">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {kpis.map((kpi) => (
-            <div key={kpi.label} className="rounded-lg border border-border bg-card p-5">
+            <div key={kpi.label} className="rounded-lg border border-border bg-card p-4 sm:p-5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{kpi.label}</span>
-                <kpi.icon size={16} className="text-muted-foreground" />
+                <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground">{kpi.label}</span>
+                <kpi.icon size={16} className="text-muted-foreground flex-shrink-0" />
               </div>
-              <p className="mt-2 font-heading text-3xl font-bold text-foreground">{kpi.value}
-                {kpi.sub && <span className="ml-2 text-xs font-normal text-muted-foreground">{kpi.sub}</span>}
+              <p className="mt-2 font-heading text-2xl sm:text-3xl font-bold text-foreground">{kpi.value}
+                {kpi.sub && <span className="ml-2 text-xs font-normal text-muted-foreground whitespace-nowrap">{kpi.sub}</span>}
               </p>
               <p className="mt-1 text-xs text-muted-foreground">{kpi.detail}</p>
             </div>
@@ -76,28 +76,28 @@ export default function SupervisorDashboard() {
 
         {/* Monitoring Roster */}
         <div className="mt-8">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h3 className="font-heading text-lg font-semibold text-foreground">Monitoring Roster</h3>
-              <p className="text-sm text-muted-foreground">Real-time status tracking for assigned internship candidates.</p>
+          <div className="mb-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="min-w-0">
+              <h3 className="font-heading text-base sm:text-lg font-semibold text-foreground">Monitoring Roster</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">Real-time status tracking for assigned internship candidates.</p>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2">
-                <Search size={14} className="text-muted-foreground" />
-                <input placeholder="Search by name or ID..." className="bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+            <div className="flex flex-col sm:flex-row items-stretch gap-2">
+              <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 flex-1 sm:flex-none">
+                <Search size={14} className="text-muted-foreground flex-shrink-0" />
+                <input placeholder="Search by name or ID..." className="flex-1 min-w-0 bg-transparent text-xs sm:text-sm outline-none placeholder:text-muted-foreground" />
               </div>
-              <Button variant="outline" size="icon"><Filter size={14} /></Button>
+              <Button variant="outline" size="icon" className="flex-shrink-0"><Filter size={14} /></Button>
             </div>
           </div>
 
-          <div className="rounded-lg border border-border bg-card">
-            <table className="w-full">
+          <div className="rounded-lg border border-border bg-card overflow-x-auto">
+            <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Student Details</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Compliance Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Profile Completion</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">Last Activity</th>
+                  <th className="px-3 sm:px-4 py-3 text-left font-semibold uppercase tracking-wide text-muted-foreground text-[10px] sm:text-xs">Student Details</th>
+                  <th className="px-3 sm:px-4 py-3 text-left font-semibold uppercase tracking-wide text-muted-foreground text-[10px] sm:text-xs">Compliance Status</th>
+                  <th className="px-3 sm:px-4 py-3 text-left font-semibold uppercase tracking-wide text-muted-foreground text-[10px] sm:text-xs">Profile Completion</th>
+                  <th className="px-3 sm:px-4 py-3 text-left font-semibold uppercase tracking-wide text-muted-foreground text-[10px] sm:text-xs">Last Activity</th>
                   <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">Actions</th>
                 </tr>
               </thead>

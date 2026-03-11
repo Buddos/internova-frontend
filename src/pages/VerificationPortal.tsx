@@ -7,24 +7,24 @@ export default function VerificationPortal() {
   return (
     <>
       <AppHeader title="Organization Verification" />
-      <main className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex flex-1 overflow-hidden">
+      <main className="flex flex-col lg:flex-row flex-1 overflow-hidden">
+        <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
           {/* Left Pane - Entity Details */}
-          <div className="w-[420px] shrink-0 overflow-y-auto border-r border-border bg-card p-6">
+          <div className="w-full lg:w-[420px] lg:shrink-0 overflow-y-auto border-b lg:border-b-0 lg:border-r border-border bg-card p-4 sm:p-6">
             {/* Company Header */}
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-muted">
-                <Building size={24} className="text-muted-foreground" />
+              <div className="flex h-12 sm:h-14 w-12 sm:w-14 items-center justify-center rounded-lg bg-muted flex-shrink-0">
+                <Building size={20} className="text-muted-foreground sm:size-6" />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="font-heading text-xl font-bold text-foreground">Quantum Dynamics Ltd.</h2>
-                  <Badge variant="muted">Pending Review</Badge>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="font-heading text-lg sm:text-xl font-bold text-foreground">Quantum Dynamics Ltd.</h2>
+                  <Badge variant="muted" className="text-xs flex-shrink-0">Pending</Badge>
                 </div>
                 <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-                  <Globe size={12} /> quantum-dynamics.ai
+                  <Globe size={12} />  quantum-dynamics.ai
                 </p>
-                <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                <p className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                   <MapPin size={12} /> Silicon Harbor, Sector 7, Tech City
                 </p>
               </div>
@@ -39,19 +39,19 @@ export default function VerificationPortal() {
               <div className="mt-3 grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Business ID</p>
-                  <p className="text-sm font-medium text-foreground">QD-992831-2024</p>
+                  <p className="text-xs sm:text-sm font-medium text-foreground">QD-992831-2024</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Tax ID / VAT</p>
-                  <p className="text-sm font-medium text-foreground">VAT-7722-1100-XX</p>
+                  <p className="text-xs sm:text-sm font-medium text-foreground">VAT-7722-1100-XX</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Entity Type</p>
-                  <p className="text-sm font-medium text-foreground">Private Limited</p>
+                  <p className="text-xs sm:text-sm font-medium text-foreground">Private Limited</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Founded Date</p>
-                  <p className="text-sm font-medium text-foreground">Oct 12, 2012</p>
+                  <p className="text-xs sm:text-sm font-medium text-foreground">Oct 12, 2012</p>
                 </div>
               </div>
             </div>
@@ -63,18 +63,18 @@ export default function VerificationPortal() {
                 Primary Representative
               </h3>
               <div className="mt-3 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">SJ</div>
-                <div>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground flex-shrink-0">SJ</div>
+                <div className="min-w-0">
                   <p className="text-sm font-semibold text-foreground">Sarah Jenkins</p>
                   <p className="text-xs text-muted-foreground">HR Director & Talent Acquisition</p>
                 </div>
               </div>
               <div className="mt-3 space-y-1.5">
-                <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Mail size={14} /> s.jenkins@quantum-dynamics.ai
+                <p className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground break-all">
+                  <Mail size={14} className="flex-shrink-0" /> s.jenkins@quantum-dynamics.ai
                 </p>
-                <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Phone size={14} /> +1 (555) 902-3344
+                <p className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground flex-wrap">
+                  <Phone size={14} className="flex-shrink-0" /> +1 (555) 902-3344
                 </p>
               </div>
             </div>
@@ -85,17 +85,17 @@ export default function VerificationPortal() {
                 <ShieldCheck size={14} />
                 Partnership Intent
               </h3>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
                 Organization is requesting "Verified Partner" status to offer 15+ engineering internships per semester. They have indicated commitment to the University's standard stipend guidelines.
               </p>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <div className="rounded-md border border-border p-3 text-center">
-                  <p className="font-heading text-2xl font-bold text-foreground">15</p>
-                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Slots Planned</p>
+                  <p className="font-heading text-xl sm:text-2xl font-bold text-foreground">15</p>
+                  <p className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Slots Planned</p>
                 </div>
                 <div className="rounded-md border border-border p-3 text-center">
-                  <p className="font-heading text-2xl font-bold text-foreground">3</p>
-                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Depts Covered</p>
+                  <p className="font-heading text-xl sm:text-2xl font-bold text-foreground">3</p>
+                  <p className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Depts Covered</p>
                 </div>
               </div>
             </div>

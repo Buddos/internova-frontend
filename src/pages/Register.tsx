@@ -35,23 +35,23 @@ export default function Register() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 px-4 py-8">
-      <Card className="w-full max-w-md p-6 shadow-lg">
-        <div className="mb-6 text-center">
-          <h1 className="font-heading text-3xl font-bold text-foreground">InternOva</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Create your account</p>
+      <Card className="w-full max-w-md p-6 sm:p-8 shadow-lg">
+        <div className="mb-6 sm:mb-8 text-center">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">InternOva</h1>
+          <p className="mt-1 text-xs sm:text-sm text-muted-foreground">Create your account</p>
         </div>
 
         {error && (
-          <div className="mb-4 flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-            <AlertCircle size={16} />
+          <div className="mb-4 flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-xs sm:text-sm text-destructive">
+            <AlertCircle size={16} className="flex-shrink-0" />
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="flex items-center gap-2">
-              <User size={14} />
+            <Label htmlFor="name" className="flex items-center gap-2 text-xs sm:text-sm">
+              <User size={14} className="flex-shrink-0" />
               Full Name
             </Label>
             <Input
@@ -60,13 +60,14 @@ export default function Register() {
               placeholder="John Doe"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className="text-sm"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="flex items-center gap-2">
-              <Mail size={14} />
+            <Label htmlFor="email" className="flex items-center gap-2 text-xs sm:text-sm">
+              <Mail size={14} className="flex-shrink-0" />
               Email Address
             </Label>
             <Input
@@ -75,13 +76,14 @@ export default function Register() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="text-sm"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password" className="flex items-center gap-2">
-              <Lock size={14} />
+            <Label htmlFor="password" className="flex items-center gap-2 text-xs sm:text-sm">
+              <Lock size={14} className="flex-shrink-0" />
               Password
             </Label>
             <Input
@@ -90,18 +92,19 @@ export default function Register() {
               placeholder="Min. 6 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="text-sm"
               required
             />
             <p className="text-xs text-muted-foreground">Must be at least 6 characters long</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="role" className="flex items-center gap-2">
-              <UserCheck size={14} />
+            <Label htmlFor="role" className="flex items-center gap-2 text-xs sm:text-sm">
+              <UserCheck size={14} className="flex-shrink-0" />
               Account Type
             </Label>
             <Select value={role} onValueChange={(value) => setRole(value as "student" | "company" | "supervisor")}>
-              <SelectTrigger id="role">
+              <SelectTrigger id="role" className="text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -117,7 +120,7 @@ export default function Register() {
           </Button>
         </form>
 
-        <div className="mt-4 border-t border-border pt-4 text-center text-sm text-muted-foreground">
+        <div className="mt-4 border-t border-border pt-4 text-center text-xs sm:text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link to="/login" className="font-medium text-primary hover:underline">
             Sign in here

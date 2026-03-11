@@ -79,89 +79,91 @@ export default function LogbookCalendar() {
   return (
     <>
       <AppHeader title="Weekly Logbook" />
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="flex gap-6">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
           {/* Main Calendar Area */}
-          <div className="flex-1">
-            <div className="flex items-start justify-between">
-              <div>
-                <h2 className="font-heading text-xl font-semibold text-foreground">Monthly Attendance</h2>
-                <p className="text-sm text-muted-foreground">Review your internship hours and submission status for May 2024.</p>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="min-w-0">
+                <h2 className="font-heading text-lg sm:text-xl font-semibold text-foreground">Monthly Attendance</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground">Review your internship hours and submission status for May 2024.</p>
               </div>
-              <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2">
+              <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 flex-shrink-0">
                 <ChevronLeft size={16} className="cursor-pointer text-muted-foreground" />
-                <span className="font-heading text-sm font-semibold text-foreground">📅 May 2024</span>
+                <span className="font-heading text-xs sm:text-sm font-semibold text-foreground whitespace-nowrap">📅 May 2024</span>
                 <ChevronRight size={16} className="cursor-pointer text-muted-foreground" />
               </div>
             </div>
 
             {/* Legend */}
-            <div className="mt-6 rounded-lg border border-border bg-card p-5">
-              <div className="mb-4 flex items-center justify-between">
+            <div className="mt-6 rounded-lg border border-border bg-card p-4 sm:p-5">
+              <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                   <h3 className="font-heading text-sm font-semibold text-foreground">Activity Calendar</h3>
                   <p className="text-xs text-muted-foreground">Click a day to edit or view full logs</p>
                 </div>
-                <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><ShieldCheck size={12} className="text-success" /> Verified</span>
-                  <span className="flex items-center gap-1"><FileText size={12} /> Draft</span>
-                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-destructive" /> Missing</span>
+                <div className="flex flex-wrap gap-2 sm:gap-4 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1"><ShieldCheck size={12} className="text-success flex-shrink-0" /> Verified</span>
+                  <span className="flex items-center gap-1"><FileText size={12} className="flex-shrink-0" /> Draft</span>
+                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-destructive flex-shrink-0" /> Missing</span>
                 </div>
               </div>
 
-              {/* Calendar Grid */}
-              <div className="grid grid-cols-7 text-center">
-                {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((d) => (
-                  <div key={d} className="border-b border-border py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{d}</div>
-                ))}
-                {/* Start padding */}
-                {Array.from({ length: startPadding }).map((_, i) => (
-                  <div key={`pad-${i}`} className="min-h-[90px] border border-border bg-background" />
-                ))}
-                {/* Days */}
-                {calendarData.map((day) => (
-                  <div key={day.day} className={`min-h-[90px] cursor-pointer border p-2 text-left transition-colors hover:bg-muted/50 ${getDayCellClasses(day.status)}`}>
-                    <div className="flex items-center justify-between">
-                      <span className={`text-sm font-semibold ${day.status === "today" ? "text-primary" : "text-foreground"}`}>
-                        {day.day}
-                        {day.status === "today" && <span className="ml-1 text-[10px] font-bold text-primary">TODAY</span>}
-                      </span>
-                      <div className="flex gap-0.5">
-                        {day.status === "verified" && <ShieldCheck size={12} className="text-success" />}
-                        {day.status === "draft" && <FileText size={12} className="text-muted-foreground" />}
+              {/* Calendar Grid - Responsive */}
+              <div className="overflow-x-auto">
+                <div className="grid grid-cols-7 gap-0 min-w-min sm:min-w-full text-center text-xs">
+                  {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((d) => (
+                    <div key={d} className="border-b border-border py-2 text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground w-12 sm:w-auto">{d}</div>
+                  ))}
+                  {/* Start padding */}
+                  {Array.from({ length: startPadding }).map((_, i) => (
+                    <div key={`pad-${i}`} className="min-h-[80px] sm:min-h-[90px] border border-border bg-background w-12 sm:w-auto" />
+                  ))}
+                  {/* Days */}
+                  {calendarData.map((day) => (
+                    <div key={day.day} className={`min-h-[80px] sm:min-h-[90px] cursor-pointer border p-1.5 sm:p-2 text-left transition-colors hover:bg-muted/50 w-12 sm:w-auto ${getDayCellClasses(day.status)}`}>
+                      <div className="flex items-center justify-between gap-1">
+                        <span className={`text-xs sm:text-sm font-semibold ${day.status === "today" ? "text-primary" : "text-foreground"}`}>
+                          {day.day}
+                          {day.status === "today" && <span className="ml-0.5 text-[8px] sm:text-[10px] font-bold text-primary">T</span>}
+                        </span>
+                        <div className="flex gap-0.5">
+                          {day.status === "verified" && <ShieldCheck size={12} className="text-success flex-shrink-0" />}
+                          {day.status === "draft" && <FileText size={12} className="text-muted-foreground flex-shrink-0" />}
+                        </div>
                       </div>
+                      {day.hours && (
+                        <div className="mt-1">
+                          <p className="text-[10px] sm:text-xs font-semibold text-foreground">{day.hours}h</p>
+                          {day.task && <p className="truncate text-[8px] sm:text-[10px] text-muted-foreground">{day.task}</p>}
+                        </div>
+                      )}
+                      {day.status === "penalty" && (
+                        <div className="mt-1">
+                          <span className="text-[8px] sm:text-[10px] font-bold uppercase text-destructive">Risk</span>
+                          <AlertTriangle size={10} className="mt-0.5 text-destructive" />
+                        </div>
+                      )}
                     </div>
-                    {day.hours && (
-                      <div className="mt-1">
-                        <p className="text-xs font-semibold text-foreground">{day.hours} Hours</p>
-                        {day.task && <p className="truncate text-[10px] text-muted-foreground">{day.task}</p>}
-                      </div>
-                    )}
-                    {day.status === "penalty" && (
-                      <div className="mt-2">
-                        <span className="text-[10px] font-bold uppercase text-destructive">Penalty Risk</span>
-                        <AlertTriangle size={12} className="mt-0.5 text-destructive" />
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Verification History */}
             <div className="mt-6">
-              <h3 className="flex items-center gap-2 font-heading text-lg font-semibold text-foreground">
+              <h3 className="flex items-center gap-2 font-heading text-base sm:text-lg font-semibold text-foreground">
                 <Clock size={16} />
                 Verification History
               </h3>
-              <div className="mt-3 flex gap-4">
+              <div className="mt-3 flex flex-col sm:flex-row gap-4">
                 {verifications.map((v) => (
-                  <div key={v.date} className="flex items-start gap-3 rounded-lg border border-border bg-card p-4">
-                    <ShieldCheck size={16} className="mt-0.5 text-success" />
-                    <div>
+                  <div key={v.date} className="flex items-start gap-3 rounded-lg border border-border bg-card p-4 flex-1">
+                    <ShieldCheck size={16} className="mt-0.5 text-success flex-shrink-0" />
+                    <div className="min-w-0">
                       <p className="text-xs font-semibold uppercase text-muted-foreground">{v.date}</p>
-                      <p className="text-sm font-medium text-foreground">Verified by {v.verifier}</p>
-                      <p className="text-xs text-muted-foreground italic">"{v.note}"</p>
+                      <p className="text-xs sm:text-sm font-medium text-foreground">Verified by {v.verifier}</p>
+                      <p className="text-xs text-muted-foreground italic truncate">"{v.note}"</p>
                     </div>
                   </div>
                 ))}
@@ -169,34 +171,34 @@ export default function LogbookCalendar() {
             </div>
           </div>
 
-          {/* Right Sidebar */}
-          <div className="w-72 shrink-0 space-y-4">
+          {/* Right Sidebar - Responsive */}
+          <div className="w-full lg:w-72 lg:shrink-0 space-y-4">
             {/* Submission Window */}
-            <div className="rounded-lg border border-border bg-card p-5">
-              <div className="flex items-center justify-between">
-                <h3 className="flex items-center gap-1.5 font-heading text-sm font-semibold text-foreground">
+            <div className="rounded-lg border border-border bg-card p-4 sm:p-5">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="flex items-center gap-1.5 font-heading text-xs sm:text-sm font-semibold text-foreground whitespace-nowrap">
                   <Clock size={14} />
-                  Submission Window
+                  Submission
                 </h3>
-                <Badge variant="success">Active</Badge>
+                <Badge variant="success" className="text-xs flex-shrink-0">Active</Badge>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">Deadline for Friday, May 19th</p>
               <div className="mt-3 rounded-md bg-muted p-4 text-center">
-                <p className="font-heading text-3xl font-bold text-foreground">
+                <p className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                   {pad(countdown.hours)}:{pad(countdown.minutes)}:{pad(countdown.seconds)}
                 </p>
-                <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">Hours : Minutes : Seconds</p>
+                <p className="mt-1 text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground">Hrs : Min : Sec</p>
               </div>
               <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
                 <span>Draft Progress</span>
-                <span>85% Complete</span>
+                <span>85%</span>
               </div>
               <Progress value={85} className="mt-1 h-2" />
-              <Button className="mt-3 w-full" variant="success">Submit Final Log</Button>
+              <Button className="mt-3 w-full text-xs sm:text-sm" variant="success">Submit Log</Button>
             </div>
 
             {/* Internship Progress */}
-            <div className="rounded-lg bg-sidebar p-5 text-sidebar-foreground">
+            <div className="rounded-lg bg-sidebar p-4 sm:p-5 text-sidebar-foreground">
               <div className="flex items-center gap-2">
                 <Award size={16} />
                 <h3 className="font-heading text-sm font-semibold">Internship Progress</h3>
