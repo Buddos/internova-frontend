@@ -66,40 +66,8 @@ export interface User {
   avatar?: string;
 }
 
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  applications: Application[];
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role: string) => Promise<void>;
-  logout: () => void;
-  applyForOpportunity: (opportunityId: string, opportunityTitle: string, company: string) => Promise<void>;
-}
-```
 
-### Application Routing
-
-```typescript
-<BrowserRouter>
-  <Routes>
-    {/* Public Routes */}
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
-    
-    {/* Protected App Routes */}
-    <Route element={<AppLayout />}>
-      <Route path="/" element={<ApplicantPipeline />} />
-      <Route path="/discovery" element={<Discovery />} />
-      <Route path="/logbook" element={<LogbookCalendar />} />
-      <Route path="/supervisor" element={<SupervisorDashboard />} />
-      <Route path="/verification" element={<VerificationPortal />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/settings" element={<Settings />} />
-    </Route>
-  </Routes>
-</BrowserRouter>
-```
+ 
 
 ## Getting Started
 
