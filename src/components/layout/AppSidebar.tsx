@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Search, BookOpen, User, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Search, BookOpen, User, Settings } from "lucide-react";
 
 interface AppSidebarProps {
   isOpen: boolean;
@@ -60,10 +60,6 @@ export default function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           <Settings size={18} />
           <span className="font-semibold">Settings</span>
         </NavLink>
-        <button className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-destructive hover:bg-sidebar-accent/50">
-          <LogOut size={18} />
-          <span className="font-semibold">Logout</span>
-        </button>
       </div>
     </aside>
   );
