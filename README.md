@@ -54,21 +54,7 @@ src/
 ```
 
 ## Key Features
-
-### Authentication Context
-
-```typescript
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: "student" | "company" | "supervisor";
-  avatar?: string;
-}
-
-
  
-
 ## Getting Started
 
 ### Prerequisites
