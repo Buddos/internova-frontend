@@ -49,9 +49,8 @@ export default function AppHeader({ title, showUserMenu = true }: AppHeaderProps
                   <p className="text-xs text-muted-foreground capitalize">{user.role.replace('_', ' ')}</p>
                 </div>
                 <Avatar className="h-9 w-9">
-                  <AvatarFallback>{user.email.charAt(0).toUpperCase()}</AvatarFallback>
                   <AvatarFallback className="bg-primary text-xs text-primary-foreground">
-                    {user.name.split(" ").map(n => n[0]).join("")}
+                    {user.email.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
               </div>

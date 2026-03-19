@@ -3,7 +3,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ShieldCheck, FileText, AlertTriangle, ChevronLeft, ChevronRight, Clock, Award, Info, Download } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { api, LogbookEntry } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 type DayStatus = "verified" | "draft" | "missing" | "penalty" | "empty" | "today";
 
@@ -47,7 +49,50 @@ const verifications = [
 ];
 
 export default function LogbookCalendar() {
+  const { user } = useAuth();
   const [countdown, setCountdown] = useState({ hours: 47, minutes: 59, seconds: 59 });
+  const [logs, setLogs] = useState<LogbookEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchLogs = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const data = await api.getMyLogbookEntries();
+      setLogs(data);
+    } catch (error) {
+      console.error("Failed to fetch logs:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user && user.role === "STUDENT") {
+      fetchLogs();
+    }
+  }, [user, fetchLogs]);
+
+  // Map API logs to calendar data
+  const monthDays = 31; // May
+  const displayData = Array.from({ length: monthDays }, (_, i) => {
+    const day = i + 1;
+    const dateStr = `2024-05-${String(day).padStart(2, '0')}`;
+    const log = logs.find(l => l.entryDate === dateStr);
+    
+    if (log) {
+      return {
+        day,
+        hours: 8, // Backend doesn't seem to store hours yet, default to 8
+        task: log.content,
+        status: log.isStamped ? "verified" : "draft" as DayStatus
+      };
+    }
+    
+    // Fallback for today (assume May 19th for demo/sync)
+    if (day === 19) return { day, status: "today" as DayStatus };
+    
+    return { day, status: "empty" as DayStatus };
+  });
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -120,7 +165,7 @@ export default function LogbookCalendar() {
                     <div key={`pad-${i}`} className="min-h-[80px] sm:min-h-[90px] border border-border bg-background w-12 sm:w-auto" />
                   ))}
                   {/* Days */}
-                  {calendarData.map((day) => (
+                  {displayData.map((day) => (
                     <div key={day.day} className={`min-h-[80px] sm:min-h-[90px] cursor-pointer border p-1.5 sm:p-2 text-left transition-colors hover:bg-muted/50 w-12 sm:w-auto ${getDayCellClasses(day.status)}`}>
                       <div className="flex items-center justify-between gap-1">
                         <span className={`text-xs sm:text-sm font-semibold ${day.status === "today" ? "text-primary" : "text-foreground"}`}>

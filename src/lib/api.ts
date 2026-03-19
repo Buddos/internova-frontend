@@ -1,5 +1,25 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://internova-backend-production.up.railway.app';
 
+export interface LogbookEntry {
+  id: string;
+  entryDate: string;
+  content: string;
+  tags: string;
+  submittedAt: string;
+  isStamped: boolean;
+  supervisorRemarks: string | null;
+  status: string;
+}
+
+export interface Application {
+  id: string;
+  vacancyTitle: string;
+  companyName: string;
+  status: string;
+  appliedAt: string;
+  updatedAt: string;
+}
+
 class ApiClient {
   private baseURL: string;
 

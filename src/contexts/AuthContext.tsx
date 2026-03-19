@@ -89,13 +89,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = async (email: string, password: string) => {
-    try {
-      await api.login(email, password);
-      // After successful login, get user data
-      await checkAuthStatus();
-    } catch (error) {
-      throw error;
-    }
+    await api.login(email, password);
+    // After successful login, get user data
+    await checkAuthStatus();
   };
 
   const register = async (data: {
@@ -108,13 +104,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     registrationNumber?: string;
     industry?: string;
   }) => {
-    try {
-      await api.register(data);
-      // After successful registration, login automatically
-      await login(data.email, data.password);
-    } catch (error) {
-      throw error;
-    }
+    await api.register(data);
+    // After successful registration, login automatically
+    await login(data.email, data.password);
   };
 
   const logout = async () => {

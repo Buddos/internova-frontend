@@ -3,10 +3,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MapPin, Clock, Briefcase, ShieldCheck, Sparkles, ChevronDown, Search, ArrowRight, CheckCircle, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
+
+const filterSections = [
+  { label: "Department", options: ["Engineering", "Business", "Design", "Medical", "Law"] },
+  { label: "Industry", options: ["Tech", "Finance", "Healthcare", "Education", "Legal"] },
+  { label: "Placement Type", options: ["On-site", "Remote", "Hybrid"] }
+];
+
 
 interface Vacancy {
   id: string;
@@ -29,30 +36,58 @@ export default function Discovery() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, Set<string>>>({
+    Department: new Set(),
+    Industry: new Set(),
+    "Placement Type": new Set()
+  });
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchVacancies();
-  }, [page]);
-
-  const fetchVacancies = async () => {
+  const fetchVacancies = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.getVacancies({ page, size: 10 });
-      if (page === 0) {
-        setVacancies(response.vacancies);
+      // If we have filters, we might need a different logic if backend supports it
+      // For now, let's use search if there's a query, otherwise get all
+      let response;
+      if (searchQuery.trim()) {
+        response = await api.searchVacancies(searchQuery, { page, size: 10 });
       } else {
-        setVacancies(prev => [...prev, ...response.vacancies]);
+        response = await api.getVacancies({ page, size: 10 });
+      }
+
+      let fetchedVacancies = response.vacancies;
+
+      // Client-side filtering as a fallback if backend doesn't support filter params yet
+      const hasActiveFilters = Object.values(selectedFilters).some(set => set.size > 0);
+      if (hasActiveFilters) {
+        fetchedVacancies = fetchedVacancies.filter(v => {
+          const deptMatch = selectedFilters.Department.size === 0 || selectedFilters.Department.has(v.industry); // Using industry as a proxy for department if necessary
+          const industryMatch = selectedFilters.Industry.size === 0 || selectedFilters.Industry.has(v.industry);
+          const typeMatch = selectedFilters["Placement Type"].size === 0 || selectedFilters["Placement Type"].has(v.location);
+          return deptMatch && industryMatch && typeMatch;
+        });
+      }
+
+      if (page === 0) {
+        setVacancies(fetchedVacancies);
+      } else {
+        setVacancies(prev => [...prev, ...fetchedVacancies]);
       }
       setHasMore(page + 1 < response.totalPages);
+      setTotalElements(response.totalElements);
     } catch (error) {
       console.error('Failed to fetch vacancies:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, searchQuery, selectedFilters]);
+
+  useEffect(() => {
+    fetchVacancies();
+  }, [page, fetchVacancies]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -112,6 +147,28 @@ export default function Discovery() {
     setOpenSections(prev => ({ ...prev, [label]: !prev[label] }));
   };
 
+  const handleFilterToggle = (section: string, option: string) => {
+    setSelectedFilters(prev => {
+      const newSet = new Set(prev[section]);
+      if (newSet.has(option)) {
+        newSet.delete(option);
+      } else {
+        newSet.add(option);
+      }
+      return { ...prev, [section]: newSet };
+    });
+    setPage(0); // Reset to first page when filtering
+  };
+
+  const clearFilters = () => {
+    setSelectedFilters({
+      Department: new Set(),
+      Industry: new Set(),
+      "Placement Type": new Set()
+    });
+    setPage(0);
+  };
+
   const hasApplied = (vacancyId: string) => {
     return appliedIds.has(vacancyId);
   };
@@ -140,7 +197,16 @@ export default function Discovery() {
           <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-2">
             <span className="text-xs text-muted-foreground flex-shrink-0">Popular:</span>
             {["#MachineLearning", "#FinTech", "#Sustainability", "#Startup"].map(tag => (
-              <span key={tag} className="rounded-md border border-border px-2 py-1 text-xs text-muted-foreground flex-shrink-0">{tag}</span>
+              <span 
+                key={tag} 
+                className="rounded-md border border-border px-2 py-1 text-xs text-muted-foreground flex-shrink-0 cursor-pointer hover:bg-accent"
+                onClick={() => {
+                  setSearchQuery(tag.substring(1));
+                  setPage(0);
+                }}
+              >
+                {tag}
+              </span>
             ))}
           </div>
         </div>
@@ -175,7 +241,7 @@ export default function Discovery() {
                   <Search size={14} />
                   Filters
                 </h3>
-                <button className="text-xs font-medium text-destructive">Reset All</button>
+                <button onClick={clearFilters} className="text-xs font-medium text-destructive">Reset All</button>
               </div>
 
               <div className="mt-4 space-y-5">
@@ -189,7 +255,10 @@ export default function Discovery() {
                       <div className="mt-2 space-y-2">
                         {section.options.map((opt) => (
                           <label key={opt} className="flex items-center gap-2 text-xs sm:text-sm text-foreground cursor-pointer">
-                            <Checkbox />
+                            <Checkbox 
+                              checked={selectedFilters[section.label].has(opt)}
+                              onCheckedChange={() => handleFilterToggle(section.label, opt)}
+                            />
                             {opt}
                           </label>
                         ))}
@@ -218,7 +287,7 @@ export default function Discovery() {
           <div className="flex-1 p-4 sm:p-6">
             <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h3 className="font-heading text-base sm:text-lg font-semibold text-foreground">Showing 428 Opportunities</h3>
+                <h3 className="font-heading text-base sm:text-lg font-semibold text-foreground">Showing {totalElements} Opportunities</h3>
                 <p className="text-xs text-muted-foreground">Matching your academic profile</p>
               </div>
               <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">

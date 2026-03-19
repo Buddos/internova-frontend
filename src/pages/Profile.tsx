@@ -10,7 +10,7 @@ import { Mail, Briefcase, Edit2, Download, Share2, User, Building, GraduationCap
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { api } from "@/lib/api";
+import { api, Application } from "@/lib/api";
 
 export default function Profile() {
   const { user, refreshUser } = useAuth();
@@ -21,6 +21,24 @@ export default function Profile() {
     cvUrl: '',
   });
   const [loading, setLoading] = useState(false);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [skills] = useState(["React", "TypeScript", "Node.js", "Tailwind CSS"]);
+  const [interests] = useState(["Web Development", "UI/UX Design", "Machine Learning"]);
+
+  useEffect(() => {
+    if (user && user.role === 'STUDENT') {
+      fetchApplications();
+    }
+  }, [user]);
+
+  const fetchApplications = async () => {
+    try {
+      const response = await api.getMyApplications({ page: 0, size: 5 });
+      setApplications(response.applications);
+    } catch (error) {
+      console.error('Failed to fetch applications:', error);
+    }
+  };
 
   useEffect(() => {
     if (user && user.role === 'STUDENT') {
@@ -192,21 +210,21 @@ export default function Profile() {
             <Card className="p-4 sm:p-6">
               <h2 className="font-heading text-base sm:text-lg font-semibold text-foreground">Applications ({applications.length})</h2>
               <div className="mt-4 space-y-3">
-                {applications.length === 0 ? (
-                  <p className="text-xs sm:text-sm text-muted-foreground">No applications yet. Start exploring opportunities!</p>
-                ) : (
-                  applications.map((app) => (
-                    <div key={app.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-lg border border-border p-3">
-                      <div className="flex-1">
-                        <h3 className="text-xs sm:text-sm font-semibold text-foreground">{app.opportunityTitle}</h3>
-                        <p className="text-xs text-muted-foreground">{app.company} • {new Date(app.appliedDate).toLocaleDateString()}</p>
+                  {applications.length === 0 ? (
+                    <p className="text-xs sm:text-sm text-muted-foreground">No applications yet. Start exploring opportunities!</p>
+                  ) : (
+                    applications.map((app) => (
+                      <div key={app.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-lg border border-border p-3">
+                        <div className="flex-1">
+                          <h3 className="text-xs sm:text-sm font-semibold text-foreground">{app.vacancyTitle}</h3>
+                          <p className="text-xs text-muted-foreground">{app.companyName} • {new Date(app.appliedAt).toLocaleDateString()}</p>
+                        </div>
+                        <Badge variant={app.status === "ACCEPTED" ? "default" : "outline"} className="w-fit">
+                          {app.status}
+                        </Badge>
                       </div>
-                      <Badge variant={app.status === "interview" ? "default" : "outline"} className="w-fit">
-                        {app.status}
-                      </Badge>
-                    </div>
-                  ))
-                )}
+                    ))
+                  )}
               </div>
             </Card>
           </div>
