@@ -79,9 +79,9 @@ class ApiClient {
   async register(data: {
     email: string;
     password: string;
-    role: 'STUDENT' | 'COMPANY_REP';
+    role: 'STUDENT' | 'COMPANY_REP' | 'SUPERVISOR' | 'ADMIN';
     studentIdNumber?: string;
-    departmentId?: string;
+    departmentName?: string;
     companyName?: string;
     registrationNumber?: string;
     industry?: string;

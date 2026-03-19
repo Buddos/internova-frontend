@@ -7,8 +7,10 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
+import ApplicationModal from "@/components/ApplicationModal";
 
 const filterSections = [
+  { label: "Course", options: ["Computer Science", "Information Technology", "Software Engineering", "Data Science", "Cybersecurity", "Business Administration", "Marketing", "Finance", "Engineering", "Design"] },
   { label: "Department", options: ["Engineering", "Business", "Design", "Medical", "Law"] },
   { label: "Industry", options: ["Tech", "Finance", "Healthcare", "Education", "Legal"] },
   { label: "Placement Type", options: ["On-site", "Remote", "Hybrid"] }
@@ -28,7 +30,7 @@ interface Vacancy {
 }
 
 export default function Discovery() {
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ Department: true, Industry: true, "Placement Type": true });
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ Course: true, Department: true, Industry: true, "Placement Type": true });
   const [appliedIds, setAppliedIds] = useState<Set<string>>(new Set());
   const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
@@ -38,7 +40,10 @@ export default function Discovery() {
   const [page, setPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [applicationModalOpen, setApplicationModalOpen] = useState(false);
+  const [selectedVacancy, setSelectedVacancy] = useState<Vacancy | null>(null);
   const [selectedFilters, setSelectedFilters] = useState<Record<string, Set<string>>>({
+    Course: new Set(),
     Department: new Set(),
     Industry: new Set(),
     "Placement Type": new Set()
@@ -64,10 +69,29 @@ export default function Discovery() {
       const hasActiveFilters = Object.values(selectedFilters).some(set => set.size > 0);
       if (hasActiveFilters) {
         fetchedVacancies = fetchedVacancies.filter(v => {
+          // Course to industry mapping (simplified for demo)
+          const courseToIndustry: Record<string, string[]> = {
+            "Computer Science": ["Tech"],
+            "Information Technology": ["Tech"],
+            "Software Engineering": ["Tech"],
+            "Data Science": ["Tech"],
+            "Cybersecurity": ["Tech"],
+            "Business Administration": ["Finance", "Business"],
+            "Marketing": ["Business"],
+            "Finance": ["Finance"],
+            "Engineering": ["Engineering"],
+            "Design": ["Design"]
+          };
+
+          const courseMatch = selectedFilters.Course.size === 0 ||
+            Array.from(selectedFilters.Course).some(course =>
+              courseToIndustry[course]?.includes(v.industry) || false
+            );
+
           const deptMatch = selectedFilters.Department.size === 0 || selectedFilters.Department.has(v.industry); // Using industry as a proxy for department if necessary
           const industryMatch = selectedFilters.Industry.size === 0 || selectedFilters.Industry.has(v.industry);
           const typeMatch = selectedFilters["Placement Type"].size === 0 || selectedFilters["Placement Type"].has(v.location);
-          return deptMatch && industryMatch && typeMatch;
+          return courseMatch && deptMatch && industryMatch && typeMatch;
         });
       }
 
@@ -108,7 +132,7 @@ export default function Discovery() {
     }
   };
 
-  const handleApply = async (vacancy: Vacancy) => {
+  const handleApply = (vacancy: Vacancy) => {
     if (!user) {
       navigate("/login");
       return;
@@ -119,28 +143,12 @@ export default function Discovery() {
       return;
     }
 
-    setLoadingIds(prev => new Set(prev).add(vacancy.id));
-    try {
-      await api.applyToVacancy(vacancy.id);
-      setAppliedIds(prev => new Set(prev).add(vacancy.id));
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message.includes("Profile must be at least 60% complete")) {
-          alert("Your profile must be at least 60% complete to apply. Please update your profile first.");
-          navigate("/profile");
-        } else if (error.message.includes("already applied")) {
-          setAppliedIds(prev => new Set(prev).add(vacancy.id));
-        } else {
-          alert(error.message);
-        }
-      }
-    } finally {
-      setLoadingIds(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(vacancy.id);
-        return newSet;
-      });
-    }
+    setSelectedVacancy(vacancy);
+    setApplicationModalOpen(true);
+  };
+
+  const handleApplicationSuccess = (vacancyId: string) => {
+    setAppliedIds(prev => new Set(prev).add(vacancyId));
   };
 
   const toggleSection = (label: string) => {
@@ -162,6 +170,7 @@ export default function Discovery() {
 
   const clearFilters = () => {
     setSelectedFilters({
+      Course: new Set(),
       Department: new Set(),
       Industry: new Set(),
       "Placement Type": new Set()
@@ -365,6 +374,13 @@ export default function Discovery() {
           © 2024 Internova University Management System • Industry-Academic Partnership Program
         </footer>
       </main>
+
+      <ApplicationModal
+        open={applicationModalOpen}
+        onOpenChange={setApplicationModalOpen}
+        vacancy={selectedVacancy}
+        onApplied={handleApplicationSuccess}
+      />
     </>
   );
 }

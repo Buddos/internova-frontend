@@ -4,10 +4,15 @@ import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Briefcase, Users, Target, CheckCircle, ArrowRight, Sparkles } from "lucide-react";
+import { useState } from "react";
+import LoginModal from "@/components/LoginModal";
+import RegisterModal from "@/components/RegisterModal";
 
 export default function ApplicantPipeline() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [registerModalOpen, setRegisterModalOpen] = useState(false);
 
   return (
     <>
@@ -22,10 +27,10 @@ export default function ApplicantPipeline() {
             </p>
             {!user ? (
               <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
-                <Button onClick={() => navigate("/register")} size="lg" className="gap-2 w-full sm:w-auto">
+                <Button onClick={() => setRegisterModalOpen(true)} size="lg" className="gap-2 w-full sm:w-auto">
                   Get Started <ArrowRight size={18} />
                 </Button>
-                <Button onClick={() => navigate("/login")} variant="outline" size="lg" className="w-full sm:w-auto">
+                <Button onClick={() => setLoginModalOpen(true)} variant="outline" size="lg" className="w-full sm:w-auto">
                   Sign In
                 </Button>
               </div>
@@ -102,7 +107,7 @@ export default function ApplicantPipeline() {
                 Browse Opportunities <ArrowRight size={18} />
               </Button>
             ) : (
-              <Button onClick={() => navigate("/register")} size="lg" className="mt-6 gap-2 w-full sm:w-auto">
+              <Button onClick={() => setRegisterModalOpen(true)} size="lg" className="mt-6 gap-2 w-full sm:w-auto">
                 Create Your Account <ArrowRight size={18} />
               </Button>
             )}
@@ -114,6 +119,24 @@ export default function ApplicantPipeline() {
           <p>© 2024 Internova - University Internship Management System • Connecting Students with Opportunities</p>
         </div>
       </main>
+
+      <LoginModal
+        open={loginModalOpen}
+        onOpenChange={setLoginModalOpen}
+        onSwitchToRegister={() => {
+          setLoginModalOpen(false);
+          setRegisterModalOpen(true);
+        }}
+      />
+
+      <RegisterModal
+        open={registerModalOpen}
+        onOpenChange={setRegisterModalOpen}
+        onSwitchToLogin={() => {
+          setRegisterModalOpen(false);
+          setLoginModalOpen(true);
+        }}
+      />
     </>
   );
 }

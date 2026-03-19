@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 
 export interface User {
@@ -35,9 +36,9 @@ interface AuthContextType {
   register: (data: {
     email: string;
     password: string;
-    role: "STUDENT" | "COMPANY_REP";
+    role: "STUDENT" | "COMPANY_REP" | "SUPERVISOR" | "ADMIN";
     studentIdNumber?: string;
-    departmentId?: string;
+    departmentName?: string;
     companyName?: string;
     registrationNumber?: string;
     industry?: string;
@@ -51,6 +52,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Check authentication status on mount
   useEffect(() => {
@@ -76,10 +78,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       }
 
-      setUser({
+      const userWithProfile = {
         ...userData,
         ...profileData,
-      });
+      };
+
+      setUser(userWithProfile);
+
+      // Role-based redirection after authentication
+      if (userData.role === 'SUPERVISOR') {
+        navigate('/supervisor', { replace: true });
+      } else if (userData.role === 'ADMIN') {
+        navigate('/verification', { replace: true });
+      } else if (userData.role === 'COMPANY_REP') {
+        navigate('/verification', { replace: true });
+      } else {
+        // Students and others go to main dashboard
+        navigate('/', { replace: true });
+      }
     } catch (error) {
       // User is not authenticated or API error
       setUser(null);
@@ -97,9 +113,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (data: {
     email: string;
     password: string;
-    role: "STUDENT" | "COMPANY_REP";
+    role: "STUDENT" | "COMPANY_REP" | "SUPERVISOR" | "ADMIN";
     studentIdNumber?: string;
-    departmentId?: string;
+    departmentName?: string;
     companyName?: string;
     registrationNumber?: string;
     industry?: string;

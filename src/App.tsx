@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import AppLayout from "@/components/layout/AppLayout";
 import ApplicantPipeline from "./pages/ApplicantPipeline";
 import Discovery from "./pages/Discovery";
@@ -21,10 +22,10 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
           <Routes>
             {/* Public Routes - Login and Register */}
             <Route path="/login" element={<Login />} />
@@ -33,10 +34,26 @@ const App = () => (
             {/* Main App Routes - Accessible to all, auth required for certain actions */}
             <Route element={<AppLayout />}>
               <Route path="/" element={<ApplicantPipeline />} />
-              <Route path="/discovery" element={<Discovery />} />
-              <Route path="/logbook" element={<LogbookCalendar />} />
-              <Route path="/supervisor" element={<SupervisorDashboard />} />
-              <Route path="/verification" element={<VerificationPortal />} />
+              <Route path="/discovery" element={
+                <ProtectedRoute allowedRoles={['STUDENT']}>
+                  <Discovery />
+                </ProtectedRoute>
+              } />
+              <Route path="/logbook" element={
+                <ProtectedRoute allowedRoles={['STUDENT']}>
+                  <LogbookCalendar />
+                </ProtectedRoute>
+              } />
+              <Route path="/supervisor" element={
+                <ProtectedRoute allowedRoles={['SUPERVISOR', 'ADMIN']}>
+                  <SupervisorDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/verification" element={
+                <ProtectedRoute allowedRoles={['COMPANY_REP', 'ADMIN']}>
+                  <VerificationPortal />
+                </ProtectedRoute>
+              } />
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
@@ -44,8 +61,8 @@ const App = () => (
             {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

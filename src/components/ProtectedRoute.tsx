@@ -1,8 +1,20 @@
-import { Navigate } from "react-router-dom";
+import { ReactNode } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
-export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+interface ProtectedRouteProps {
+  children: ReactNode;
+  allowedRoles?: string[];
+  requireAuth?: boolean;
+}
+
+export const ProtectedRoute = ({
+  children,
+  allowedRoles = [],
+  requireAuth = true
+}: ProtectedRouteProps) => {
+  const { user, isLoading } = useAuth();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -15,9 +27,30 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  // Check authentication requirement
+  if (requireAuth && !user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Check role-based access
+  if (allowedRoles.length > 0 && user && !allowedRoles.includes(user.role)) {
+    // Redirect to appropriate dashboard based on user role
+    const redirectPath = getRoleBasedRedirect(user.role);
+    return <Navigate to={redirectPath} replace />;
   }
 
   return <>{children}</>;
 };
+
+function getRoleBasedRedirect(role: string): string {
+  switch (role) {
+    case 'SUPERVISOR':
+      return '/supervisor';
+    case 'ADMIN':
+    case 'COMPANY_REP':
+      return '/verification';
+    case 'STUDENT':
+    default:
+      return '/';
+  }
+}

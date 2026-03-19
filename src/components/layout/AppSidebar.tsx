@@ -1,20 +1,51 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Search, BookOpen, User, Settings } from "lucide-react";
+import { LayoutDashboard, Search, BookOpen, User, Settings, Users, ShieldCheck } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AppSidebarProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const navItems = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/discovery", label: "Discovery", icon: Search },
-  { to: "/logbook", label: "Logbook", icon: BookOpen },
-  { to: "/profile", label: "Profile", icon: User },
-];
-
 export default function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const location = useLocation();
+  const { user } = useAuth();
+
+  // Base navigation items for all users
+  const baseNavItems = [
+    { to: "/", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/profile", label: "Profile", icon: User },
+  ];
+
+  // Role-specific navigation items
+  const getRoleSpecificItems = () => {
+    if (!user) return [];
+
+    switch (user.role) {
+      case 'STUDENT':
+        return [
+          { to: "/discovery", label: "Discovery", icon: Search },
+          { to: "/logbook", label: "Logbook", icon: BookOpen },
+        ];
+      case 'COMPANY_REP':
+        return [
+          { to: "/verification", label: "Verification", icon: ShieldCheck },
+        ];
+      case 'SUPERVISOR':
+        return [
+          { to: "/supervisor", label: "Supervision", icon: Users },
+        ];
+      case 'ADMIN':
+        return [
+          { to: "/verification", label: "Verification", icon: ShieldCheck },
+          { to: "/supervisor", label: "Supervision", icon: Users },
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const navItems = [...baseNavItems, ...getRoleSpecificItems()];
 
   return (
     <aside className={`fixed left-0 top-0 z-30 flex h-screen w-60 flex-col bg-sidebar text-sidebar-foreground transition-transform lg:translate-x-0 ${
